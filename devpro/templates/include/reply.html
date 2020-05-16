@@ -1,0 +1,34 @@
+{%load static%}
+{%load tag_filters%}
+{%for reply in comment_replies|comment_replies_filter:comment%}
+<div class="container-sm d-flex pl-5 ml-auto">
+    {%if reply.replier.avatar %}
+    <a href="/{{user}}">
+        <img class="default_avatar mt-2" height="40" width="40" src="{{ reply.replier.avatar.url }}"/>
+    </a>
+    {%else%}
+    <a href="/{{user}}">
+        <img class="default_avatar mt-3" height="40" width="40" src="{%static 'images/default_avatar.png'%}"/>
+    </a>
+    {%endif%}
+
+    <div class="border w-100 text-secondary mt-2 p-3 ml-2" style="background-color: rgba(0, 0, 0, 0.1)">
+        <div>
+            {{reply.text}}
+        </div>
+        <form method="post" action="{% url 'reply_like' reply.uuid %}"> {%csrf_token%}
+            <button type="submit"><img width="20" height="20" src="{%static 'icons/like.svg'%}"></button>
+        </form>
+
+        <span id="reply-likes-count" class="text-muted">
+                {{reply.get_number_reply_likes}}
+        </span>
+    </div>
+</div>
+{%endfor%}
+<div class="container-sm pl-5 w-100 ml-2 p-2">
+    <form action="{% url 'comment_reply' comment.uuid %}" method="post" enctype="multipart/form-data">{%csrf_token%}
+        <input name='reply' type="text" class="form-control text-form-reply w-99 mb-3 "
+               placeholder="write a reply..."/>
+    </form>
+</div>

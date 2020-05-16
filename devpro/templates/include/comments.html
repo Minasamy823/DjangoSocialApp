@@ -1,0 +1,31 @@
+{%load static%}
+{%load tag_filters%}
+{%for comment in comments|qs_filter:post%}
+<div class="d-flex p-2 w-100">
+    {%if comment.commenter.avatar %}
+    <a href="/{{user}}">
+        <img class="default_avatar" height="70" width="70" src="{{ comment.commenter.avatar.url }}"/>
+    </a>
+    {%else%}
+    <a href="/{{user}}">
+        <img class="default_avatar" height="70" width="70" src="{%static 'images/default_avatar.png'%}"/>
+    </a>
+    {%endif%}
+    <div class="pl-2 w-100">
+        <div class="border w-100 text-secondary mt-2 p-3" style="background-color: rgba(0, 0, 0, 0.1)">
+            <div> {{comment.text}}</div>
+            <form method="post" action="{% url 'comment_like' comment.uuid %}" > {%csrf_token%}
+                <button type="submit"><img width="20" height="20" src="{%static 'icons/like.svg'%}"></button>
+            </form>
+            <span id="likes-count" class="comment-like-count text-muted">
+                {{comment.get_number_Comment_likes}}
+            </span>
+        </div>
+
+    </div>
+</div>
+<div>
+    {% include "include/reply.html" with comment=comment comment_replies=comment_replies%}
+</div>
+
+{%endfor%}

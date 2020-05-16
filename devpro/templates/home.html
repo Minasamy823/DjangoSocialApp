@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{%load static%}
+{%load tag_filters%}
+
+{% block home %}
+<div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/{{user}}">
+            {%if user.avatar %}
+            <img src="{{ user.avatar.url }}"/>
+            {%else%}
+            <img width="70" height="70" src="{%static 'images/default_avatar.png'%}"/>
+            {%endif%}
+        </a>
+        <a class="navbar-brand" href="/{{user}}">{{user|title}}</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/home">Home</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
+    <div class="container-sm">
+        <form method="post" class=" form_post" enctype="multipart/form-data"> {%csrf_token%}
+            <div class="form-group border border-primary">
+                    <textarea name="text" class="form-control" rows="3"
+                              placeholder="Write your post here..." required>
+                    </textarea>
+                <input name="post_image" type="file" class="float-left form-control-file">
+                <button type="submit" class="button-post-form btn btn-primary">Post</button>
+            </div>
+        </form>
+    </div>
+    {% include "include/posts.html" with posts=posts comments=comments comment_replies=comment_replies %}
+</div>
+
+
+
+{% endblock home %}
