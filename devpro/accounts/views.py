@@ -126,6 +126,15 @@ def delete_post(request, *args, **kwargs):
     return HttpResponseRedirect('/home')
 
 
+def post_share(request, *args, **kwargs):
+    post_uuid = kwargs['uuid']
+    post = Post.objects.get(uuid=post_uuid)
+    Post.objects.create(text=post.text,
+                        user=request.user,
+                        post_image=post.post_image if post.post_image else None)
+    return HttpResponseRedirect(f'/{request.user}')
+
+
 def register(request):
     template_name = 'register.html'
     if request.method == 'POST':

@@ -22,13 +22,11 @@
         </ul>
 
         {%if user != user_profile and not is_friend%}
-<!--        {%if not is_friend%}-->
         <form action="{% url 'send_friend_request' user_profile.username %}" method="post"
               class="form-inline my-2 my-lg-0">{%csrf_token%}
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">add friend</button>
         </form>
         {%endif%}
-<!--        {%endif%}-->
         {%if user == user_profile%}
         <div class="dropdown">
             <a class="btn btn-secondary dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown"

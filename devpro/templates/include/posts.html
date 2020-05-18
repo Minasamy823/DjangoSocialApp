@@ -46,9 +46,14 @@
                 <img src="{%static 'icons/like.svg'%}">
             </a>
             <span class="ml-1">{{post.get_number_post_likes}}</span>
-            <p class="ml-auto">
-                {{post.text}}
-            </p>
+            {%if not post.user == user%}
+                <p class="ml-auto d-flex">
+                    <a href="{% url 'post_share' post.uuid %}">
+                        <p>share</p>
+                        <img src="{% static 'icons/share.svg'%}"/>
+                    </a>
+                </p>
+            {%endif%}
         </div>
         <div class="dropdown">
             <a class=" dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"

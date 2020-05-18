@@ -21,4 +21,6 @@ urlpatterns = [
     path('comment/reply/<uuid:uuid>', comment_reply, name='comment_reply'),
     path('<uuid:uuid>/', delete_post, name='delete_post'),
     path('<str:username>/', login_required(FriendProfile.as_view()), name='friend_profile'),
+    path('post/share/<uuid:uuid>/', login_required(post_share), name='post_share'),
+
 ]
