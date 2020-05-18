@@ -77,14 +77,6 @@ from rest_framework.authtoken.models import Token
 #
 
 # For templates
-@require_http_methods(["POST"])
-def add_friend(request, *args, **kwargs):
-    user_profile = kwargs['username']
-    user_visitior = get_object_or_404(UserProfile, username=user_profile)
-    logged_user = get_object_or_404(UserProfile, username=request.user.username)
-    logged_user.friends.add(user_visitior)
-    return HttpResponseRedirect(request.path_info)
-
 
 def post_like(request, *args, **kwargs):
     post = Post.objects.get(uuid=kwargs['uuid'])
@@ -205,7 +197,10 @@ class FriendProfile(View):
         username = self.kwargs.get('username')
         user = UserProfile.objects.get(username=username)
         posts = Post.objects.filter(user=user.id).order_by('-created_date')
-        context = {'posts': posts, 'user_profile': user}
+        friends = [friend for friend in
+                   UserProfile.objects.filter(username=self.request.user).values_list('friends', flat=True)]
+        is_friend = user.id in friends
+        context = {'posts': posts, 'user_profile': user, 'is_friend': is_friend}
         return render(request, self.template_name, context)
 
     def post(self, request, *args, **kwargs):
