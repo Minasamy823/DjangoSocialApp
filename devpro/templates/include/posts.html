@@ -1,73 +1,73 @@
 {%load static%}
 {%load tag_filters%}
 
-    {%for post in posts%}
-    <div class="container-sm border mb-3">
-        <div class="d-flex ">
-            <div class="p-2 ">
-                {%if post.user.avatar %}
-                <a href="/{{user}}">
-                    <img class="default_avatar" height="70" width="70" src="{{ post.user.avatar.url }}"/>
-                </a>
-                {%else%}
-                <a href="/{{user}}">
-                    <img class="default_avatar" height="70" width="70" src="{%static 'images/default_avatar.png'%}"/>
-                </a>
-                {%endif%}
-            </div>
-            <div>
-                <a class="text-color-blue" href="/{{post.user}}">
-                    {{ post.user|title}}
-                </a>
-                <div class="font-italic post-published-day">
-                    {{post.created_date|date:'Y-m-d H:i'}}
-                </div>
-            </div>
-            {%if request.user == post.user%}
-            <form method="post" class="post-published-day"> {%csrf_token%}
-                <a href="{% url 'delete_post' post.uuid %}">
-                    <img src="{% static 'icons/scratch.svg'%}">
-                </a>
-            </form>
+{%for post in posts%}
+<div class="container-sm border mb-3">
+    <div class="d-flex ">
+        <div class="p-2 ">
+            {%if post.user.avatar %}
+            <a href="/{{post.user}}">
+                <img class="default_avatar" height="70" width="70" src="{{ post.user.avatar.url }}"/>
+            </a>
+            {%else%}
+            <a href="/{{post.user}}">
+                <img class="default_avatar" height="70" width="70" src="{%static 'images/default_avatar.png'%}"/>
+            </a>
             {%endif%}
         </div>
         <div>
-            <p>
-                {{post.text}}
-            </p>
-        </div>
-        {%if post.post_image%}
-        <div class="post-image">
-            <img width=100% src="{{post.post_image.url}}"/>
-        </div>
-        {%endif%}
-        <div class="d-flex">
-            <a href="{% url 'post_like' post.uuid %}">
-                <img src="{%static 'icons/like.svg'%}">
+            <a class="text-color-blue" href="/{{post.user}}">
+                {{ post.user|title}}
             </a>
-            <span class="ml-1">{{post.get_number_post_likes}}</span>
-            {%if not post.user == user%}
-                <p class="ml-auto d-flex">
-                    <a href="{% url 'post_share' post.uuid %}">
-                        <p>share</p>
-                        <img src="{% static 'icons/share.svg'%}"/>
-                    </a>
-                </p>
-            {%endif%}
-        </div>
-        <div class="dropdown">
-            <a class=" dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-               aria-haspopup="true" aria-expanded="false">
-                comments
-            </a>
-            <div class="dropdown-comments dropdown-menu" aria-labelledby="navbarDropdown">
-                {% include "include/comments.html" with comments=comments comment_replies=comment_replies%}
+            <div class="font-italic post-published-day">
+                {{post.created_date|date:'Y-m-d H:i'}}
             </div>
         </div>
-
-        <form action="{% url 'post_comment' post.uuid %}" method="post" enctype="multipart/form-data">{%csrf_token%}
-            <input name='comment' type="text" class="border border-primary form-control mb-2"
-                   placeholder="write your comment...">
+        {%if request.user == post.user%}
+        <form method="post" class="post-published-day"> {%csrf_token%}
+            <a href="{% url 'delete_post' post.uuid %}">
+                <img src="{% static 'icons/scratch.svg'%}">
+            </a>
         </form>
+        {%endif%}
     </div>
+    <div>
+        <p>
+            {{post.text}}
+        </p>
+    </div>
+    {%if post.post_image%}
+    <div class="post-image">
+        <img width=100% src="{{post.post_image.url}}"/>
+    </div>
+    {%endif%}
+    <div class="d-flex">
+        <a href="{% url 'post_like' post.uuid %}">
+            <img src="{%static 'icons/like.svg'%}">
+        </a>
+        <span class="ml-1">{{post.get_number_post_likes}}</span>
+        {%if not post.user == user%}
+        <p class="ml-auto d-flex">
+            <a class="text-muted text-decoration-none" href="{% url 'post_share' post.uuid %}">
+        <p class="text-muted">share</p>
+        <img src="{% static 'icons/share.svg'%}"/>
+        </a>
+        </p>
+        {%endif%}
+    </div>
+    <div class="dropdown">
+        <a class=" dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+           aria-haspopup="true" aria-expanded="false">
+            comments
+        </a>
+        <div class="dropdown-comments dropdown-menu" aria-labelledby="navbarDropdown">
+            {% include "include/comments.html" with comments=comments comment_replies=comment_replies%}
+        </div>
+    </div>
+
+    <form action="{% url 'post_comment' post.uuid %}" method="post" enctype="multipart/form-data">{%csrf_token%}
+        <input name='comment' type="text" class="border border-primary form-control mb-2"
+               placeholder="write your comment...">
+    </form>
+</div>
 {%endfor%}

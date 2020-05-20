@@ -123,7 +123,7 @@ def delete_post(request, *args, **kwargs):
     post_uuid = kwargs['uuid']
     post = Post.objects.get(uuid=post_uuid)
     post.delete()
-    return HttpResponseRedirect('/home')
+    return HttpResponseRedirect(f'/{request.user}')
 
 
 def post_share(request, *args, **kwargs):
@@ -173,26 +173,29 @@ class Home(View):
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         friends = [friend for friend in
                    UserProfile.objects.filter(username=self.request.user).values_list('friends', flat=True)]
         friends.append(self.request.user.id)
-        posts = Post.objects.filter(user__in=friends).order_by('-created_date')
+        posts = Post.objects.filter(user__in=friends, visibility__in=['PU', 'OF']).order_by('-created_date')
         comments = Comment.objects.all()
         comment_replies = CommentReply.objects.all()
         context = {'posts': posts, 'comments': comments, 'comment_replies': comment_replies}
         return render(request, self.template_name, context)
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         text = self.request.POST.get('text')
+        visibility = self.request.POST.get('visibility')
+        print(visibility)
         post_image = self.request.FILES.get('post_image')
         if text:
-            new_post = Post.objects.create(user=self.request.user, text=text, post_image=post_image)
+            new_post = Post.objects.create(user=self.request.user, text=text, post_image=post_image,
+                                           visibility=visibility)
             new_post.save()
         return HttpResponseRedirect(self.request.path_info)
 
 
-class FriendProfile(View):
+class FriendProfile(Home):
     template_name = 'friend_profile.html'
 
     @method_decorator(login_required)
@@ -205,17 +208,17 @@ class FriendProfile(View):
     def get(self, request, *args, **kwargs):
         username = self.kwargs.get('username')
         user = UserProfile.objects.get(username=username)
-        posts = Post.objects.filter(user=user.id).order_by('-created_date')
         friends = [friend for friend in
                    UserProfile.objects.filter(username=self.request.user).values_list('friends', flat=True)]
         is_friend = user.id in friends
-        context = {'posts': posts, 'user_profile': user, 'is_friend': is_friend}
+        print(is_friend)
+        is_owner_profile = username == self.request.user.username
+        print(is_owner_profile)
+        if not is_owner_profile and not is_friend:
+            posts = Post.objects.filter(user=user.id, visibility='PU').order_by('-created_date')
+        if not is_owner_profile and is_friend:
+            posts = Post.objects.filter(user=user.id, visibility__in=['PU', 'OF']).order_by('-created_date')
+        if is_owner_profile:
+            posts = Post.objects.filter(user=user.id).order_by('-created_date')
+        context = {'posts': posts, 'user_profile': user, 'is_friend': is_friend, 'is_owner_profile': is_owner_profile}
         return render(request, self.template_name, context)
-
-    def post(self, request, *args, **kwargs):
-        text = self.request.POST.get('text')
-        post_image = self.request.FILES.get('post_image')
-        if text:
-            new_post = Post.objects.create(user=self.request.user, text=text, post_image=post_image)
-            new_post.save()
-        return HttpResponseRedirect(self.request.path_info)

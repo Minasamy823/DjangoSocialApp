@@ -127,6 +127,18 @@ class UserProfile(PhoneNUmber, AbstractBaseUser, PermissionsMixin):
 
 
 class Post(LikeDislikeTextAbstract, CreatedUpdateAt):
+    ONLY_ME = "OM"
+    PUBLIC = 'PU'
+    EXCEPT_FRIENDS = 'EF'
+    ONLY_FRIENDS = 'OF'
+
+    VISIBILITY = (
+        (ONLY_ME, "only_me"),
+        (PUBLIC, "public"),
+        (EXCEPT_FRIENDS, "except_friends"),
+        (ONLY_FRIENDS, "only_friends")
+    )
+    visibility = models.CharField(max_length=2, choices=VISIBILITY, default=PUBLIC, blank=False)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     user = models.ForeignKey(UserProfile, related_name='post', on_delete=models.CASCADE)
     post_image = VersatileImageField(default='', blank=True)
@@ -199,4 +211,3 @@ class CommentReply(LikeDislikeTextAbstract, CreatedUpdateAt):
     @property
     def get_number_reply_likes(self):
         return self.likes if self.likes > 0 else ''
-

@@ -35,14 +35,20 @@
                     <textarea name="text" class="form-control" rows="3"
                               placeholder="Write your post here..." required>
                     </textarea>
-                <input name="post_image" type="file" class="float-left form-control-file">
+                <div class="d-flex">
+                    <select name='visibility' class="custom-select mr-sm-2" id="inlineFormCustomSelect">
+                        <option selected value="PU">Public</option>
+                        <option value="OM">Only me</option>
+                        <option value="OF">Only friends</option>
+                    </select>
+                    <input name="post_image" type="file" class="pr-0 form-control-file">
+                </div>
                 <button type="submit" class="button-post-form btn btn-primary">Post</button>
             </div>
         </form>
     </div>
     {% include "include/posts.html" with posts=posts comments=comments comment_replies=comment_replies %}
 </div>
-
 
 
 {% endblock home %}
