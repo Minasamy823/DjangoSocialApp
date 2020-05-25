@@ -17,3 +17,9 @@ class PhoneNumberBackend(BaseBackend):
         except UserProfile.DoesNotExist:
             return None  # return None if custom user model does not exist
 
+    def get_user(self, user_id):
+        try:
+            return UserProfile.objects.get(pk=user_id)
+        except UserProfile.DoesNotExist:
+            return None
+

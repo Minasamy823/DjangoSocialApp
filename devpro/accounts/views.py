@@ -9,7 +9,7 @@ from django.conf import settings
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, resolve_url
 from django.views.decorators.http import require_http_methods
 from django.views.generic import FormView
 from rest_framework.authtoken.serializers import AuthTokenSerializer
@@ -22,7 +22,6 @@ from rest_framework.response import Response
 from .forms import RegisterForm
 from .permissions import friends_permissions
 from .serializers import *
-from .tasks import send_email
 from rest_framework.authtoken.models import Token
 
 
@@ -211,9 +210,7 @@ class FriendProfile(Home):
         friends = [friend for friend in
                    UserProfile.objects.filter(username=self.request.user).values_list('friends', flat=True)]
         is_friend = user.id in friends
-        print(is_friend)
         is_owner_profile = username == self.request.user.username
-        print(is_owner_profile)
         if not is_owner_profile and not is_friend:
             posts = Post.objects.filter(user=user.id, visibility='PU').order_by('-created_date')
         if not is_owner_profile and is_friend:

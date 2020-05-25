@@ -9,11 +9,10 @@ https://docs.djangoproject.com/en/3.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.0/ref/settings/
 """
-
 import os
 import sys
-
-# PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+from devpro.local_settings import env
+# PROJECT_RO.OT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -25,7 +24,7 @@ sys.path.append(os.path.join(BASE_DIR, 'devpro'))
 SECRET_KEY = 'dg#0^cvrrb_c-%b@9k08*w6qgq&w0n+)eol=3er$!ax_1dh!9u'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = ['*']
 
@@ -95,7 +94,7 @@ REST_FRAMEWORK = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'devpro',
+        'NAME': 'devpro4',
         'USER': 'testingdb',
         'PASSWORD': 'testingdb',
         'HOST': 'localhost',
@@ -177,10 +176,10 @@ LOGIN_REDIRECT_URL = '/home/'
 LOGOUT_REDIRECT_URL = '/login/'
 PHONENUMBER_DEFAULT_REGION = 'RU'
 
-AUTHENTICATION_BACKENDS = (
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  # fallback to default authentication backend if first fails
     'accounts.backends.PhoneNumberBackend',  # our custom authentication backend
-    'django.contrib.auth.backends.ModelBackend'  # fallback to default authentication backend if first fails
-)
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2.7/howto/static-files/
@@ -189,3 +188,8 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # for redirecting to 'login' in case the user is anonymous and tried to access required_logging views
 LOGIN_URL = '/login'
+
+try:
+    from devpro.local_settings import *
+except ImportError:
+    raise Exception("A local_settings.py file is required to run this project")
