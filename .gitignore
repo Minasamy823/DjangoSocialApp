@@ -1,3 +1,4 @@
 # Project exclude paths
 /venv/
 devpro/devpro/local_settings.py
+devpro/devpro/test.py

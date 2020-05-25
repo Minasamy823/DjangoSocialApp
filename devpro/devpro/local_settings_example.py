@@ -2,7 +2,7 @@ import environ
 
 # Django environ settings
 # https://django-environ.readthedocs.io/en/latest/
-# delete the example (edit the name) and add your specific enviro variables
+# delete the word example (edit the name to local_settings.py) and add your specific enviro variables
 
 env = environ.Env(
     DEBUG=(bool, True),
