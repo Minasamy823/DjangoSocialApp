@@ -21,12 +21,12 @@ sys.path.append(os.path.join(BASE_DIR, 'devpro'))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'dg#0^cvrrb_c-%b@9k08*w6qgq&w0n+)eol=3er$!ax_1dh!9u'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = env('ALLOWED_HOSTS')
 
 # Application definition
 
@@ -94,11 +94,11 @@ REST_FRAMEWORK = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'devpro4',
-        'USER': 'testingdb',
-        'PASSWORD': 'testingdb',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': env('POSTGRES_DB'),
+        'USER': env('POSTGRES_USER'),
+        'PASSWORD': env('POSTGRES_PASSWORD'),
+        'HOST': env('POSTGRES_HOST'),
+        'PORT': env('POSTGRES_PORT'),
     }
 }
 
@@ -142,7 +142,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = env('LANGUAGE_CODE')
 
 TIME_ZONE = 'UTC'
 
@@ -153,14 +153,14 @@ USE_L10N = True
 USE_TZ = True
 
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_PASSWORD = '89778257626notmyphone'
-EMAIL_HOST_USER = 'minasmsm9@gmail.com'
-EMAIL_PORT = 587
+EMAIL_HOST = env("EMAIL_HOST")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD")
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_PORT = env("EMAIL_PORT")
 
-STATIC_URL = '/static/'
+STATIC_URL = env('STATIC_URL')
 
-STATIC_ROOT = '/static/'
+STATIC_ROOT = env('STATIC_ROOT')
 AUTH_USER_MODEL = 'accounts.UserProfile'
 
 # REDIS_HOST = 'localhost'
